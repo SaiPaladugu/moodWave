@@ -13,3 +13,7 @@ NG_APP_API_KEY=YOUR_KEY_HERE
 npm i
 ng serve
 ```
+
+## Future
+Wrote the application to transition MoodWave into production level, to where I won't need to add users as project developers to give remote access
+Production mode would also unrestrict Spotify's API limits
