@@ -11,7 +11,7 @@ import { MoodHomeComponent } from './mood-home/mood-home.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -20,6 +20,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MoodHomeComponent
   ],
   imports: [
+    MatTooltipModule,
     MatSnackBarModule,
     MatCardModule,
     MatProgressSpinnerModule,

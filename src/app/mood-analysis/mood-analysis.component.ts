@@ -3,7 +3,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { firstValueFrom } from 'rxjs';
+interface SpotifyAudioFeaturesResponse {
+  audio_features: any[];
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -12,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './mood-analysis.component.html',
   styleUrls: ['./mood-analysis.component.css'],
 })
+
 export class MoodAnalysisComponent {
   songIdSet = new Set<string>();
   topMatches: string[] = [];
@@ -165,54 +169,36 @@ export class MoodAnalysisComponent {
   async similarSongs() {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.apiKey}`);
     let rateLimitExceeded = false;
-    const songIdArray = Array.from(this.songIdSet);
-    const batchSize = 25;  // Number of requests per batch
-    const delay = 2000;   // Delay in milliseconds between each batch
+    const songIdArray = Array.from(this.songIdSet).slice(0, 100);
+    const songIdString = songIdArray.join(',');
   
-    const makeBatchRequest = async (batch: string[]) => {
-      const songObservables: Observable<any>[] = batch.map(songId => {
-        return this.http.get(`https://api.spotify.com/v1/audio-features/${songId}`, { headers });
-      });
-      return forkJoin(songObservables).toPromise();
-    };
+    try {
+      const observable = this.http.get<SpotifyAudioFeaturesResponse>(`https://api.spotify.com/v1/audio-features?ids=${songIdString}`, { headers });
+      const response = await firstValueFrom(observable);
+      
+      if (response && response.audio_features) {
+        const differencesArray = response.audio_features.map((features: any) => {
+          let difference = 0;
+          for (let key in this.spotifyPayload) {
+            difference += Math.abs(this.spotifyPayload[key] - features[key]);
+          }
+          return { id: features.id, difference };
+        });
   
-    let audioFeaturesArray: any[] = [];
+        differencesArray.sort((a, b) => a.difference - b.difference);
   
-    for (let i = 0; i < songIdArray.length; i += batchSize) {
-      try {
-        const batch = songIdArray.slice(i, i + batchSize);
-        const batchResults = await makeBatchRequest(batch);
-        if (batchResults) {
-          audioFeaturesArray = [...audioFeaturesArray, ...batchResults];
-        }
-        await new Promise(resolve => setTimeout(resolve, delay));
-      } catch (error: any) { 
-        if (error.status === 429) {
-          this.isLoading = false;
-          rateLimitExceeded = true;
-          this.rateLimitMessage = "Rate limit; try again in 5 minutes";
-          break;
-        }
+        this.topMatches = differencesArray.slice(0, 10).map(item => item.id);
+        console.log('Top 10 matching song IDs:', this.topMatches);
+        this.makePlaylist();
+      }
+    } catch (error: any) {
+      if (error.status === 429) {
+        this.isLoading = false;
+        rateLimitExceeded = true;
+        this.rateLimitMessage = "Rate limit; try again in 5 minutes";
       }
     }
-  
-    if (!rateLimitExceeded) {
-      const differencesArray = audioFeaturesArray.map(features => {
-        let difference = 0;
-        for (let key in this.spotifyPayload) {
-          difference += Math.abs(this.spotifyPayload[key] - features[key]);
-        }
-        return { id: features.id, difference };
-      });
-  
-      differencesArray.sort((a, b) => a.difference - b.difference);
-  
-      this.topMatches = differencesArray.slice(0, 10).map(item => item.id);
-      console.log('Top 10 matching song IDs:', this.topMatches);
-      this.makePlaylist();
-    }
-  }
-      
+  }    
 
   makePlaylist() {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${this.apiKey}`);
