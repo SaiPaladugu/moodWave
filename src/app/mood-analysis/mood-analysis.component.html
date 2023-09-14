@@ -1,0 +1,23 @@
+<div class="mood-analysis-container">
+  <div class="backdrop" *ngIf="isLoading"></div>
+
+  <h2>Mood and Intent Analysis</h2>
+  <div class="input-box">
+    <label for="userInput">Enter your text: </label>
+    <input type="text" id="userInput" name="userInput" [(ngModel)]="userInput" required placeholder="late night car ride">
+    <button (click)="analyzeMood()" class="analyze-button">Analyze</button>
+  </div>
+  <br>
+
+  <div class="loader-wrapper" *ngIf="isLoading"> 
+    <mat-progress-spinner mode="indeterminate" class="custom-spinner"></mat-progress-spinner>
+  </div>
+
+  <div *ngIf="playlistUrl" class="result-box">
+    <br>
+    <p class="playlist-result">Your Playlist: <a [href]="playlistUrl" target="_blank" class="spotify-link">Open in Spotify</a></p>
+  </div>
+  <div *ngIf="rateLimitMessage" class="rate-limit-message">
+    <p>{{ rateLimitMessage }}</p>
+  </div>
+</div>
