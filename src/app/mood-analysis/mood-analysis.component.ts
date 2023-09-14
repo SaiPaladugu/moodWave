@@ -2,7 +2,6 @@ import { Component, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, forkJoin } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
@@ -46,7 +45,7 @@ export class MoodAnalysisComponent {
     if (hash["access_token"]) {
       this.apiKey = hash["access_token"];
       localStorage.setItem('spotify_access_token', this.apiKey);
-      localStorage.setItem('spotify_token_expiry', (currentTimestamp + 3600000).toString()); // 1 hour = 3600000 ms
+      localStorage.setItem('spotify_token_expiry', (currentTimestamp + 3600000).toString());
       console.log(this.apiKey);
     } 
     else if (currentTimestamp < Number(expiryTimestamp)) {
@@ -116,7 +115,7 @@ export class MoodAnalysisComponent {
 
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${environment.API_KEY}`,
+      Authorization: `Bearer ${process.env['NG_APP_API_KEY']}`,
     });
     
     const requestBody = {
