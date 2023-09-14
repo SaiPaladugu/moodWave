@@ -67,6 +67,7 @@ export class MoodAnalysisComponent {
       });
   
     this.grabRelevant();
+    console.log(process.env['NG_APP_API_KEY'].substring(0,5));
   }
   
   
