@@ -1,11 +1,12 @@
 # MoodWave
 
 **MoodWave is an Angular-based playlist generator that utilizes OpenAI's GPT-3.5 Turbo to curate playlists based on your mood and intent.**
+\
+\
+$${\color{red} \large \textbf{Note: Playlist creation will NOT work without being added to the developer dashboard. DM me for access}}$$
 
-```diff
-- Note: Playlist creation will NOT work without being added to the developer dashboard. DM me for access
-- Current spots available: 12/25
-```
+$${\color{red} \large \textbf{Current spots available: 10/25}}$$
+
 
 ## Control Flow
 ![moodwave control flow (2)](https://github.com/SaiPaladugu/moodWave/assets/50923875/4f5493a6-32a2-4b96-acdf-37cde48a9ff3)
