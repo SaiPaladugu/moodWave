@@ -8,7 +8,7 @@
 ```
 
 ## Control Flow
-![moodwave control flow (1)](https://github.com/SaiPaladugu/moodWave/assets/50923875/c575fa98-241f-428f-84cf-e971ef65e714)
+![moodwave control flow (2)](https://github.com/SaiPaladugu/moodWave/assets/50923875/4f5493a6-32a2-4b96-acdf-37cde48a9ff3)
 
 ## How to Add Your GPT API Key
 To integrate OpenAI's GPT-3.5 Turbo, add your API key in a .env file located at the root of the repo. Add your key as shown below:
